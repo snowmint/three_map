@@ -2,222 +2,324 @@
 <html>
 
 <head>
-    <style>
-        #info {
-            position: absolute;
-            top: 45%;
-            width: 100%;
-            font-family: 'Courier New', monospace;
+  <style>
+    #info {
+      position: absolute;
+      top: 45%;
+      width: 100%;
+      font-family: 'Courier New', monospace;
 
-            padding: 5px;
-            text-align: center;
-            font-size: 50px;
-            color: #6f7896;
-        }
+      padding: 5px;
+      text-align: center;
+      font-size: 50px;
+      color: #6f7896;
+    }
 
-        body {
-            /*background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);*/
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            margin: 0px;
-            overflow: hidden;
-        }
+    body {
+      /*background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);*/
+      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      margin: 0px;
+      overflow: hidden;
+    }
 
-        button {
-            border: none;
-            color: #6f7896;
-            background-color: Transparent;
-            border-radius: 8px;
-            transition-duration: 0.4s;
-            /* Safari */
-            transition-duration: 0.4s;
-            border: 1px solid #6f7896;
-        }
+    button {
+      border: none;
+      color: #6f7896;
+      background-color: Transparent;
+      border-radius: 8px;
+      transition-duration: 0.4s;
+      /* Safari */
+      transition-duration: 0.4s;
+      border: 1px solid #6f7896;
+    }
 
-        button:hover {
-            border: 1px solid #96B9F2;
-            background-color: Transparent;
-            color: #6f7896;
-            box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.54), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
-        }
-
-    </style>
+    button:hover {
+      border: 1px solid #96B9F2;
+      background-color: Transparent;
+      color: #6f7896;
+      box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.54), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+    }
+  </style>
 </head>
 
 <body>
-    <!--
+  <!--
         <div id='info'> DESCENDANTS<br>OF THE ABACUS <br>
         </div>
 -->
-    <script src="./three.js/build/three.min.js"></script>
-    <script src="./three.js/examples/js/controls/OrbitControls.js"></script>
-    <script src="./three.js/examples/js/loaders/MTLLoader.js"></script>
-    <script src="./three.js/examples/js/loaders/OBJLoader.js"></script>
-    <script src="./three.js/examples/js/loaders/FBXLoader.js"></script>
-    <script src="./three.js/examples/js/libs/dat.gui.min.js"></script>
+  <script src="./three.js/build/three.min.js"></script>
+  <script src="./three.js/examples/js/controls/OrbitControls.js"></script>
+  <script src="./three.js/examples/js/loaders/MTLLoader.js"></script>
+  <script src="./three.js/examples/js/loaders/OBJLoader.js"></script>
+  <script src="./three.js/examples/js/loaders/FBXLoader.js"></script>
+  <script src="./three.js/examples/js/libs/dat.gui.min.js"></script>
 
-    <script>
-        var camera, scene, renderer, controls;
-        var model_map;
-        var PI = Math.PI;
-        var spotLight, spotLight_box, light_ambient;
+  <script>
+    var camera, scene, renderer, controls;
+    var model_map;
+    var PI = Math.PI;
+    var spotLight, spotLight_box, light_ambient;
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    var INTERSECTED, SELECTED;
+    
+    var group = new THREE.Group();
+    
+    
+    init();
+    animate();
 
-        init();
-        animate();
+    function init() {
 
-        function init() {
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xcccccc);
+      scene.fog = new THREE.FogExp2(0xcccccc, 0.002);
 
-				scene = new THREE.Scene();
-				scene.background = new THREE.Color( 0xcccccc );
-				scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+      renderer = new THREE.WebGLRenderer({
+        antialias: true
+      });
+      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-				renderer = new THREE.WebGLRenderer( { antialias: true } );
-				renderer.setPixelRatio( window.devicePixelRatio );
-				renderer.setSize( window.innerWidth, window.innerHeight );
-				document.body.appendChild( renderer.domElement );
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+      camera.position.set(0, 3, 0);
 
-				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
-				camera.position.set( 0, 3, 0 );
+      // controls
 
-				// controls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.listenToKeyEvents(window); // optional
 
-				controls = new THREE.OrbitControls( camera, renderer.domElement );
-				controls.listenToKeyEvents( window ); // optional
+      //controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
 
-				//controls.addEventListener( 'change', render ); // call this only in static scenes (i.e., if there is no animation loop)
+      //controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+      //controls.dampingFactor = 0.05;
 
-				//controls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-				//controls.dampingFactor = 0.05;
+      //controls.screenSpacePanning = false;
 
-				//controls.screenSpacePanning = false;
+      controls.minDistance = 2;
+      controls.maxDistance = 5;
 
-				controls.minDistance = 2;
-				controls.maxDistance = 5;
+      //controls.maxPolarAngle = Math.PI / 2;
 
-				//controls.maxPolarAngle = Math.PI / 2;
 
+      // model
+      var mtlLoader = new THREE.MTLLoader();
+      mtlLoader.setPath("./map0405/");
+      mtlLoader.load('map.mtl', function(materials) {
+
+        materials.preload();
+
+        var objLoader = new THREE.OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.setPath("./map0405/");
+        objLoader.load('map.obj', function(object) {
+          var texture = new THREE.TextureLoader().load("./map0405/Texture.png");
+          object.traverse(function(node) {
+            if (node.material) {
+              node.material.side = THREE.DoubleSide;
+            }
+            if (node instanceof THREE.Mesh) {
+              node.material.map = texture;
+            }
+            
+            console.log(node);
+          });
           
-                // model
-                var mtlLoader = new THREE.MTLLoader();
-                mtlLoader.setPath( "./map0405/" );
-                mtlLoader.load( 'map.mtl', function( materials ) {
+          model_map = object;
+          var children = model_map.children;
+          for (var i = 0; i < children.length; i++) {
+            group.add(children[i]);
+          }
+          //console.log(model_map.children);
+          
+          //intersects = raycaster.intersectObjects(model_map.children, true);
+          scene.add(model_map);
+        });
+      });
 
-                  materials.preload();
+      // lights
 
-                  var objLoader = new THREE.OBJLoader();
-                  objLoader.setMaterials( materials );
-                  objLoader.setPath( "./map0405/" );
-                  objLoader.load( 'map.obj', function ( object ) {
-                    var texture = new THREE.TextureLoader().load("./map0405/Texture.png");
-                    object.traverse( function( node ) {
-                      if( node.material ) {
-                        node.material.side = THREE.DoubleSide;
-                      }
-                      if (node instanceof THREE.Mesh) {
-                        node.material.map = texture;
-                      }
-                      console.log(node);
+      const dirLight1 = new THREE.DirectionalLight(0xffffff);
+      dirLight1.position.set(-10, 10, -10);
+      scene.add(dirLight1);
+
+      const dirLight2 = new THREE.DirectionalLight(0x002288);
+      dirLight2.position.set(-10, -10, -10);
+      scene.add(dirLight2);
+
+      const ambientLight = new THREE.AmbientLight(0xcecece);
+      scene.add(ambientLight);
+
+      //
+
+      window.addEventListener('resize', onWindowResize);
+      //window.addEventListener( 'mousemove', onMouseMove, false );
+      document.addEventListener('click', onDocumentClick, false);
+    }
+    
+//    function onMouseMove( event ) {
+//
+//        // calculate mouse position in normalized device coordinates
+//        // (-1 to +1) for both components
+//
+//        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+//        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+//      
+//      
+//
+//    }
+//    var onMouseMove = (function () {
+//        var selectedObjects = model_map;  //在object被變顏色之前，會先把object和原來的顏色存到這個Map，
+//                                          //Key是object、Value是原來的顏色
+//        var rayLine;  //用來顯示raycaster運作原裡的線，為THREE.Line
+//        return function (event) {
+//            //如果Scene上有rayLine，先把它除Scene中移除
+//            if (rayLine) {
+//                scene.remove(rayLine);
+//            }
+//            var raycaster = new THREE.Raycaster();
+//            var mouse = new THREE.Vector2();
+//            // 將滑鼠的x、y位置換算成-1~1的值，從renderer的畫面左下角(-1,-1)，到右上解(1,1)
+//            mouse.x = ((event.clientX - container.offsetLeft + document.body.scrollLeft) / container.offsetWidth) * 2 - 1;
+//            mouse.y = -((event.clientY - container.offsetTop + document.body.scrollTop) / container.offsetHeight) * 2 + 1;
+//            //設置Raycaster，setFromCamera(對renderer來說的x,y位置:-1~1, -1~1，Camera物件)
+//            raycaster.setFromCamera(mouse.clone(), camera);
+//            //將Scene的children(即各物件)和raycaster一起計算，得到滑鼠選中的Object(ray會貫穿，不只一個)
+//            var intersects = raycaster.intersectObjects(scene.children);
+//            var isFoundInSelectedObjects  = false; //選到的第一個Object有無存在selectedObjects中
+//            //遍歷selectedObjects中的Object
+//            selectedObjects.forEach(function (value, key) {
+//                if (!!intersects[0] && key === intersects[0].object) {
+//                    //如果selectedObjects中的Object是選到的第一個Object
+//                    //直接改變Object的顏色
+//                    intersects[0].object.material.color.setHex(0xff0000);
+//                    isFoundInSelectedObjects = true;
+//                } else {
+//                    //如果selectedObjects中的Object不是選到的第一個Object
+//                    //把Object的顏色(原來的顏色存在以Object為key的value中)改回來
+//                    //將Object的資料從selectedObjects中刪掉
+//                    key.material.color.setHex(value);
+//                    selectedObjects.delete(key);
+//                }
+//            });
+//            if (!!intersects[0] && !isFoundInSelectedObjects) {
+//                //如果選到的第一個Object沒有存紀錄在selectedObjects中
+//                //將Object原來的顏色存進selectedObjects中，以Object為key
+//                selectedObjects.set(intersects[0].object, intersects[0].object.material.color.getHex());
+//                //改變Object的顏色
+//                intersects[0].object.material.color.setHex(0xff0000);
+//            }
+//            ////////
+//            //製造要標示raycaster運作原裡的線，THREE.Line
+//            var rayLineGeometry = new THREE.Geometry();
+//            //設置兩點來畫線
+//            rayLineGeometry.vertices.push(raycaster.ray.origin.clone());
+//            rayLineGeometry.vertices.push(raycaster.ray.origin.clone().add(raycaster.ray.direction.clone().setLength(10000)));
+//            var rayLineMaterial = new THREE.LineBasicMaterial({
+//                color: 0x00ff00
+//            });
+//            var line = new THREE.Line(rayLineGeometry, rayLineMaterial);
+//            rayLine = line;
+//            scene.add(line); //加到Scene中
+//            //////////
+//        };
+//    })();
+    
+    function onDocumentClick(event) {
+        event.preventDefault();
+        mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+        mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObject(group, true);
+
+        //pick things bigger then 0
+        if (intersects.length > 0) {
+            //get first object
+            if (INTERSECTED != intersects[0].object) {
+
+                //console
+                console.log(intersects);
+                console.log(intersects[0].object.name);
+
+                //chose depend on name
+                if (intersects[0].object.name == "R0_4F_Plane.004") {
+                    SELECTED = intersects[0].object;
+                    SELECTED.currentHex = SELECTED.material.color.getHex();
+                    model_map.traverse(function (child) {
+                        if (child instanceof THREE.Mesh) {
+                            child.material.color.setHex(0xFF00FF);
+                        }
                     });
-                    model_map = object;
-                    scene.add( model_map );
-                  });
-//                  objLoader.load( 'map.obj', function ( object ) {
+                } else {
+                    if (SELECTED) {
+                        SELECTED.material.color.setHex(SELECTED.currentHex);
+                    }
+
+                    SELECTED = intersects[0].object;
+
+                    SELECTED.currentHex = SELECTED.material.color.getHex();//record
+                    SELECTED.material.color.setHex(0x66ff00);
+                }
+            }
+
+
+        } else {
+            if (SELECTED) {
+                SELECTED.material.color.set(SELECTED.currentHex);//recover
+                model_map.traverse(function (child) {
+                    if (child instanceof THREE.Mesh) {
+                        child.material.color.setHex(0xFFFF00);
+                    }
+                });
+            }
+            SELECTED = null;
+        }
+
+
+    }
+    function onWindowResize() {
+
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+    }
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+
+      controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
+
+      render();
+
+    }
+
+    function render() {
+      
+      // update the picking ray with the camera and mouse position
+//      raycaster.setFromCamera( mouse, camera );
+//      
+//      const intersects = raycaster.intersectObjects(scene.children);
 //
-//                    model_map = object;
-//                    //model_map.position.y = -50;
-//                    scene.add( model_map );
-//
-//                  } );
+//      // calculate objects intersecting the picking ray
+//      //"R0_3F_Plane.002"
+//      //"R1_3F_Cube.002"
+//      //"R2_3F_Cube.003"
+//      //"R3_3F_Cube.004"
+//      if(intersects){
+//        for ( let i = 1; i < intersects.length; i ++ ) {
+//          //var temp_color = intersects[ i ].object.material.color;
+//          intersects[ i ].object.material.color.set( 0xff0000 );
+//          //intersects[ i ].object.material.color.set(temp_color);
+//          //console.log(intersects[ i ].object.name);
+//        }
+//      }
 
-                } );
-//				const loader = new THREE.OBJLoader();
+      renderer.render(scene, camera);
 
-				// load a resource
-//				loader.load(
-//					// resource URL
-//					'./map0405/map.obj',
-//					// called when resource is loaded
-//					function ( object ) {
-//						object.position.set(0,0,0);
-//						object.scale.set(5, 5, 5);
-//						model_left = object;
-//						scene.add( model_left );
-//
-//					},
-//					// called when loading is in progresses
-//					function ( xhr ) {
-//
-//						console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-//
-//					},
-//					// called when loading has errors
-//					function ( error ) {
-//
-//						console.log( 'An error happened' );
-//
-//					}
-//				);
-
-//				const geometry = new THREE.CylinderGeometry( 0, 10, 30, 4, 1 );
-//				const material = new THREE.MeshPhongMaterial( { color: 0xffffff, flatShading: true } );
-//
-//				for ( let i = 0; i < 500; i ++ ) {
-//
-//					const mesh = new THREE.Mesh( geometry, material );
-//					mesh.position.x = Math.random() * 1600 - 800;
-//					mesh.position.y = 0;
-//					mesh.position.z = Math.random() * 1600 - 800;
-//					mesh.updateMatrix();
-//					mesh.matrixAutoUpdate = false;
-//					scene.add( mesh );
-//
-//				}
-
-				// lights
-
-				const dirLight1 = new THREE.DirectionalLight( 0xffffff );
-				dirLight1.position.set( 1, 1, 1 );
-				scene.add( dirLight1 );
-
-				const dirLight2 = new THREE.DirectionalLight( 0x002288 );
-				dirLight2.position.set( - 1, - 1, - 1 );
-				scene.add( dirLight2 );
-
-				const ambientLight = new THREE.AmbientLight( 0x222222 );
-				scene.add( ambientLight );
-
-				//
-
-				window.addEventListener( 'resize', onWindowResize );
-
-			}
-
-			function onWindowResize() {
-
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-
-				controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
-
-				render();
-
-			}
-
-			function render() {
-
-				renderer.render( scene, camera );
-
-			}
-
-
-    </script>
-</body>
-
-</html>
+    }
+  </script>
+</body></html>
