@@ -612,6 +612,8 @@
 
             SELECTED.currentHex = SELECTED.material.color.getHex(); //record
             SELECTED.material.color.setHex(0xffffff);
+            camera.position.set(0, 3, 2);
+            camera.lookAt(0, 0, 0);
           }
         }
 
