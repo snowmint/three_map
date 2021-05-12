@@ -138,7 +138,7 @@
   <!-- The Modal -->
   <div id="myModal_R0" class="modal">
 
-    <!-- Modal content -->
+    <!-- Modal content0 -->
     <div class="modal-content">
       <div class="modal-header">
         <h2>R0 國際會議廳</h2>
@@ -156,7 +156,7 @@
 
   <div id="myModal_R1" class="modal">
 
-    <!-- Modal content -->
+    <!-- Modal content1 -->
     <div class="modal-content">
       <div class="modal-header">
         <h2>R1 第一會議室</h2>
@@ -174,7 +174,7 @@
 
   <div id="myModal_R2" class="modal">
 
-    <!-- Modal content -->
+    <!-- Modal content2 -->
     <div class="modal-content">
       <div class="modal-header">
         <h2>R2 第二會議室</h2>
@@ -192,7 +192,7 @@
 
   <div id="myModal_R3" class="modal">
 
-    <!-- Modal content -->
+    <!-- Modal content3 -->
     <div class="modal-content">
       <div class="modal-header">
         <h2>R3 遠距會議室</h2>
@@ -210,7 +210,7 @@
 
   <div id="myModal_S" class="modal">
 
-    <!-- Modal content -->
+    <!-- Modal contentS -->
     <div class="modal-content">
       <div class="modal-header">
         <h2>S 交誼廳</h2>
@@ -225,10 +225,7 @@
     </div>
 
   </div>
-  <!--
-        <div id='info'> DESCENDANTS<br>OF THE ABACUS <br>
-        </div>
--->
+
   <script src="./three.js/build/three.min.js"></script>
   <script src="./three.js/examples/js/controls/OrbitControls.js"></script>
   <script src="./three.js/examples/js/loaders/MTLLoader.js"></script>
@@ -253,17 +250,8 @@
     var modal_R2 = document.getElementById("myModal_R2");
     var modal_R3 = document.getElementById("myModal_R3");
     var modal_S = document.getElementById("myModal_S");
-    // Get the <span> element that closes the modal
-    //var span = document.getElementsByClassName("close");
     var modal_list;
     modal_list = [modal_R0, modal_R1, modal_R2, modal_R3, modal_S];
-
-    // When the user clicks on <span> (x), close the modal
-    //    span.onclick = function() {
-    // modal_list.forEach(element => {
-    // element.style.display = "none";
-    // })
-    // }
 
     window.onclick = function(event) {
       modal_list.forEach(element => {
@@ -348,7 +336,7 @@
 
               //console.log(model_map.children);
 
-              //                intersects = raycaster.intersectObjects(model_map.children, true);
+              //intersects = raycaster.intersectObjects(model_map.children, true);
               scene.add(model_map);
 
             }, onProgress, onError);
@@ -374,77 +362,7 @@
       //window.addEventListener( 'mousemove', onMouseMove, false );
       document.addEventListener('click', onDocumentClick, false);
 
-
-
     }
-
-    //    function onMouseMove( event ) {
-    //
-    //        // calculate mouse position in normalized device coordinates
-    //        // (-1 to +1) for both components
-    //
-    //        mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-    //        mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    //      
-    //      
-    //
-    //    }
-    //    var onMouseMove = (function () {
-    //        var selectedObjects = model_map;  //在object被變顏色之前，會先把object和原來的顏色存到這個Map，
-    //                                          //Key是object、Value是原來的顏色
-    //        var rayLine;  //用來顯示raycaster運作原裡的線，為THREE.Line
-    //        return function (event) {
-    //            //如果Scene上有rayLine，先把它除Scene中移除
-    //            if (rayLine) {
-    //                scene.remove(rayLine);
-    //            }
-    //            var raycaster = new THREE.Raycaster();
-    //            var mouse = new THREE.Vector2();
-    //            // 將滑鼠的x、y位置換算成-1~1的值，從renderer的畫面左下角(-1,-1)，到右上解(1,1)
-    //            mouse.x = ((event.clientX - container.offsetLeft + document.body.scrollLeft) / container.offsetWidth) * 2 - 1;
-    //            mouse.y = -((event.clientY - container.offsetTop + document.body.scrollTop) / container.offsetHeight) * 2 + 1;
-    //            //設置Raycaster，setFromCamera(對renderer來說的x,y位置:-1~1, -1~1，Camera物件)
-    //            raycaster.setFromCamera(mouse.clone(), camera);
-    //            //將Scene的children(即各物件)和raycaster一起計算，得到滑鼠選中的Object(ray會貫穿，不只一個)
-    //            var intersects = raycaster.intersectObjects(scene.children);
-    //            var isFoundInSelectedObjects  = false; //選到的第一個Object有無存在selectedObjects中
-    //            //遍歷selectedObjects中的Object
-    //            selectedObjects.forEach(function (value, key) {
-    //                if (!!intersects[0] && key === intersects[0].object) {
-    //                    //如果selectedObjects中的Object是選到的第一個Object
-    //                    //直接改變Object的顏色
-    //                    intersects[0].object.material.color.setHex(0xff0000);
-    //                    isFoundInSelectedObjects = true;
-    //                } else {
-    //                    //如果selectedObjects中的Object不是選到的第一個Object
-    //                    //把Object的顏色(原來的顏色存在以Object為key的value中)改回來
-    //                    //將Object的資料從selectedObjects中刪掉
-    //                    key.material.color.setHex(value);
-    //                    selectedObjects.delete(key);
-    //                }
-    //            });
-    //            if (!!intersects[0] && !isFoundInSelectedObjects) {
-    //                //如果選到的第一個Object沒有存紀錄在selectedObjects中
-    //                //將Object原來的顏色存進selectedObjects中，以Object為key
-    //                selectedObjects.set(intersects[0].object, intersects[0].object.material.color.getHex());
-    //                //改變Object的顏色
-    //                intersects[0].object.material.color.setHex(0xff0000);
-    //            }
-    //            ////////
-    //            //製造要標示raycaster運作原裡的線，THREE.Line
-    //            var rayLineGeometry = new THREE.Geometry();
-    //            //設置兩點來畫線
-    //            rayLineGeometry.vertices.push(raycaster.ray.origin.clone());
-    //            rayLineGeometry.vertices.push(raycaster.ray.origin.clone().add(raycaster.ray.direction.clone().setLength(10000)));
-    //            var rayLineMaterial = new THREE.LineBasicMaterial({
-    //                color: 0x00ff00
-    //            });
-    //            var line = new THREE.Line(rayLineGeometry, rayLineMaterial);
-    //            rayLine = line;
-    //            scene.add(line); //加到Scene中
-    //            //////////
-    //        };
-    //    })();
 
     function onDocumentClick(event) {
       event.preventDefault();
@@ -483,7 +401,7 @@
             SELECTED.currentHex = SELECTED.material.color.getHex();
             model_map.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
-                child.material.color.setHex(0xffd4a1);
+                child.material.color.setHex(0xffc5a1);
               }
             });
             modal_R1.style.display = "block";
@@ -492,7 +410,7 @@
             SELECTED.currentHex = SELECTED.material.color.getHex();
             model_map.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
-                child.material.color.setHex(0xfff6b0);
+                child.material.color.setHex(0xfff4a1);
               }
             });
             modal_R2.style.display = "block";
@@ -501,7 +419,7 @@
             SELECTED.currentHex = SELECTED.material.color.getHex();
             model_map.traverse(function(child) {
               if (child instanceof THREE.Mesh) {
-                child.material.color.setHex(0xd2ffa3);
+                child.material.color.setHex(0xa5ffac);
               }
             });
             modal_S.style.display = "block";
@@ -555,51 +473,22 @@
         SELECTED = null;
       }
 
-
     }
 
     function onWindowResize() {
-
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
 
       renderer.setSize(window.innerWidth, window.innerHeight);
-
     }
 
     function animate() {
-
       requestAnimationFrame(animate);
-
-      //controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
-
       render();
-
     }
 
     function render() {
-
-      // update the picking ray with the camera and mouse position
-      //      raycaster.setFromCamera( mouse, camera );
-      //      
-      //      const intersects = raycaster.intersectObjects(scene.children);
-      //
-      //      // calculate objects intersecting the picking ray
-      //      //"R0_3F_Plane.002"
-      //      //"R1_3F_Cube.002"
-      //      //"R2_3F_Cube.003"
-      //      //"R3_3F_Cube.004"
-      //      if(intersects){
-      //        for ( let i = 1; i < intersects.length; i ++ ) {
-      //          //var temp_color = intersects[ i ].object.material.color;
-      //          intersects[ i ].object.material.color.set( 0xff0000 );
-      //          //intersects[ i ].object.material.color.set(temp_color);
-      //          //console.log(intersects[ i ].object.name);
-      //        }
-      //      }
-
       renderer.render(scene, camera);
-
     }
 
   </script>
