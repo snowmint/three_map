@@ -361,7 +361,7 @@
 
       window.addEventListener('resize', onWindowResize);
       //window.addEventListener( 'mousemove', onMouseMove, false );
-
+      window.addEventListener("touchstart", onTouch, false);
       document.addEventListener('click', onDocumentClick, false);
 
       modal_list.forEach(element => {
@@ -378,10 +378,14 @@
     }
 
 
-    function onDocumentClick(event) {
-      event.preventDefault();
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    function onTouch(event) {
+      console.log("touch");
+      //event.preventDefault();
+      //mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      //mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      console.log(event.touches[0])
+      mouse.x = +(event.touches[0].screenX / window.innerWidth) * 2 + -1;
+      mouse.y = -(event.touches[0].screenY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
       var intersects = raycaster.intersectObject(group, true);
       var pre_camera_pos = camera.position;
@@ -392,8 +396,8 @@
         if (INTERSECTED != intersects[0].object) {
 
           //console
-          console.log(intersects);
-          console.log(intersects[0].object.name);
+          //console.log(intersects);
+          //console.log(intersects[0].object.name);
 
           //depend on name
           if (intersects[0].object.name == "R0_4F_Plane.004") {
@@ -463,7 +467,268 @@
               // camera.lookAt(p);
               camera.position.set(-1, 2.2, -0.2);
               camera.lookAt(-1, 0.2, -0.2);
-              console.log(mouse.x, mouse.y);
+              //console.log(mouse.x, mouse.y);
+              model_map.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0xffc5a1);
+                }
+              });
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+            modal_R2.style.display = "block";
+          } else if (intersects[0].object.name == "S_4F_Plane.007") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+            if (modal_S.style.display == "none" && intersects.length > 0) {
+              // var p = intersects[0].point;
+              // var n = intersects[0].face.normal.clone();
+              // n.multiplyScalar(2);
+              // n.add(intersects[0].point);
+              // console.log(n, p);
+              //camera.position.copy(n);
+              //camera.lookAt(p);
+              camera.position.set(0, 2.3, -1.4);
+              camera.lookAt(0, 0.3, -1.4);
+              // console.log(mouse.x, mouse.y);
+              model_map.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0xa5ffac);
+                }
+              });
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+            modal_S.style.display = "block";
+          } else if (intersects[0].object.name == "R3_3F_Cube.004") {
+
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+            if (modal_R3.style.display == "none" && intersects.length > 0) {
+              model_map.traverse(function(child) {
+
+
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0x9ae4ff);
+                }
+              });
+              //              var end_start_diff = new THREE.Vector3(0.7, 0.2, -0.8);
+              //              end_start_diff.sub(camera.position);
+              //              console.log("camera.position", camera.position);
+              //              console.log("end_start_diff", end_start_diff);
+              //
+              //              var temp_x = end_start_diff.x / 10;
+              //              var temp_y = end_start_diff.y / 10;
+              //              var temp_z = end_start_diff.z / 10;
+              //              var temp_vec3 = new THREE.Vector3(temp_x, temp_y, temp_z);
+              //              console.log("temp_vec3", temp_vec3);
+              //              for (i = 1; i <= 10; i++) {
+              //                console.log(temp_vec3);
+              //
+              //                console.log(camera.position);
+              //                var pre_x = camera.position.x;
+              //                var pre_y = camera.position.y;
+              //                var pre_z = camera.position.z;
+              //                var pre_vec3 = new THREE.Vector3(pre_x, pre_y, pre_z);
+              //                var add_res = pre_vec3.add(temp_vec3);
+              //                console.log(add_res);
+              //                camera.position.set(add_res.x, add_res.y, add_res.z);
+              //                sleep(100);
+              //                console.log(camera.position);
+              //              }
+              camera.position.set(0.7, 2.2, -0.8);
+              camera.lookAt(0.7, 0.2, -0.8);
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+
+              //              var end_start_diff = new THREE.Vector3(0.0, 3.0, 2.0);
+              //              end_start_diff.sub(camera.position);
+              //              console.log("camera.position", camera.position);
+              //              console.log("end_start_diff", end_start_diff);
+              //
+              //              var temp_x = end_start_diff.x / 10;
+              //              var temp_y = end_start_diff.y / 10;
+              //              var temp_z = end_start_diff.z / 10;
+              //              var temp_vec3 = new THREE.Vector3(temp_x, temp_y, temp_z);
+              //              console.log("temp_vec3", temp_vec3);
+              //              for (i = 1; i <= 10; i++) {
+              //                console.log(temp_vec3);
+              //
+              //                console.log(camera.position);
+              //                var pre_x = camera.position.x;
+              //                var pre_y = camera.position.y;
+              //                var pre_z = camera.position.z;
+              //                var pre_vec3 = new THREE.Vector3(pre_x, pre_y, pre_z);
+              //                var add_res = pre_vec3.add(temp_vec3);
+              //                console.log(add_res);
+              //                camera.position.set(add_res.x, add_res.y, add_res.z);
+              //                sleep(200);
+              //                console.log(camera.position);
+              //              }
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+            modal_R3.style.display = "block";
+
+          } else if (intersects[0].object.name == "ToiletWomen_4F_Plane.005") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+            if (camera.position.x == 0 && camera.position.y == 3 && camera.position.z > 1.9 && camera.position.z <= 2 && intersects.length > 0) {
+              camera.position.set(0.1, 2.4, -0.7);
+              camera.lookAt(0.1, 0.4, -0.7);
+              model_map.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0xb2c3fd);
+                }
+              });
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+          } else if (intersects[0].object.name == "ToiletMen_4F_Plane.008") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+
+            if (camera.position.x == 0 && camera.position.y == 3 && camera.position.z > 1.9 && camera.position.z <= 2 && intersects.length > 0) {
+              camera.position.set(-0.2, 2.4, -0.7);
+              camera.lookAt(-0.2, 0.4, -0.7);
+              model_map.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0xc7baff);
+                }
+              });
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+          } else {
+            if (SELECTED) {
+              SELECTED.material.color.setHex(SELECTED.currentHex);
+            }
+
+            SELECTED = intersects[0].object;
+
+            SELECTED.currentHex = SELECTED.material.color.getHex(); //record
+            SELECTED.material.color.setHex(0xffffff);
+            camera.position.set(0, 3, 2);
+            camera.lookAt(0, 0, 0);
+          }
+        }
+
+
+      } else {
+        if (SELECTED) {
+          SELECTED.material.color.set(SELECTED.currentHex); //recover
+          model_map.traverse(function(child) {
+            if (child instanceof THREE.Mesh) {
+              child.material.color.setHex(0xc9c9c9);
+            }
+          });
+
+          modal_list.forEach(element => {
+            if (element.style.display == "block") {
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+          })
+
+        }
+        SELECTED = null;
+      }
+    }
+
+    function onDocumentClick(event) {
+      event.preventDefault();
+      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      var intersects = raycaster.intersectObject(group, true);
+      var pre_camera_pos = camera.position;
+      var pre_camera_look = (0, 0, 0);
+      //pick things bigger then 0
+      if (intersects.length > 0) {
+        //get first object
+        if (INTERSECTED != intersects[0].object) {
+
+          //console
+          //console.log(intersects);
+          //console.log(intersects[0].object.name);
+
+          //depend on name
+          if (intersects[0].object.name == "R0_4F_Plane.004") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+            model_map.children[19].material.color.setHex(0xffa2a5);
+            if (modal_R0.style.display == "none" && intersects.length > 0) {
+              // var p = intersects[0].point;
+              // var n = intersects[0].face.normal.clone(0, 1, 0);
+              // console.log(intersects[0]);
+              // n.multiplyScalar(2);
+              // n.add(intersects[0].point);
+              // console.log(n, p);
+              camera.position.set(-0, 2.4, 0);
+              camera.lookAt(-0, 0.4, 0);
+              //console.log(mouse.x, mouse.y);
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+            modal_R0.style.display = "block";
+
+            //var temp_mesh = model_map.children[19].clone();
+            //temp_mesh.material.color.setHex(0xffa2a5);
+            //model_map.children[19].material.emissive.setHex(0xffa2a5);
+            //model_map.children[19].face.color.setHex(0xffa2a5);
+            //            model_map.traverse(function(child) {
+            //              if (child instanceof THREE.Mesh && child.name == "R0_4F_Plane.004") {
+            //                  console.log(child);
+            //                  child.material.color.setHex(0xffa2a5);
+            //              }
+            //            });
+          } else if (intersects[0].object.name == "R1_3F_Cube.002") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+
+            if (modal_R1.style.display == "none" && intersects.length > 0) {
+              // var p = intersects[0].point;
+              // var n = intersects[0].face.normal.clone();
+              // n.multiplyScalar(2);
+              // n.add(intersects[0].point);
+              camera.position.set(1, 2.2, -0.2);
+              camera.lookAt(1, 0.2, -0.2);
+              // console.log(mouse.x, mouse.y);
+              model_map.traverse(function(child) {
+                if (child instanceof THREE.Mesh) {
+                  child.material.color.setHex(0xffc5a1);
+                }
+              });
+            } else {
+              SELECTED.material.color.setHex(0xffffff);
+              camera.position.set(0, 3, 2);
+              camera.lookAt(0, 0, 0);
+            }
+            modal_R1.style.display = "block";
+          } else if (intersects[0].object.name == "R2_3F_Cube.003") {
+            SELECTED = intersects[0].object;
+            SELECTED.currentHex = SELECTED.material.color.getHex();
+            if (modal_R2.style.display == "none" && intersects.length > 0) {
+              // var p = intersects[0].point;
+              // var n = intersects[0].face.normal.clone();
+              // n.multiplyScalar(2);
+              // n.add(intersects[0].point);
+              // console.log(n, p);
+              // camera.position.copy(n);
+              // camera.lookAt(p);
+              camera.position.set(-1, 2.2, -0.2);
+              camera.lookAt(-1, 0.2, -0.2);
+              //console.log(mouse.x, mouse.y);
               model_map.traverse(function(child) {
                 if (child instanceof THREE.Mesh) {
                   child.material.color.setHex(0xffc5a1);
