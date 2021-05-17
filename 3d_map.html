@@ -239,6 +239,7 @@
     var PI = Math.PI;
     var spotLight, spotLight_box, light_ambient;
     const raycaster = new THREE.Raycaster();
+    const mouse_touch = new THREE.Vector2();
     const mouse = new THREE.Vector2();
     var INTERSECTED, SELECTED;
 
@@ -361,7 +362,7 @@
 
       window.addEventListener('resize', onWindowResize);
       //window.addEventListener( 'mousemove', onMouseMove, false );
-      window.addEventListener("touchstart", onTouch, false);
+      document.addEventListener("touchstart", onTouch, false);
       document.addEventListener('click', onDocumentClick, false);
 
       modal_list.forEach(element => {
@@ -383,10 +384,17 @@
       //event.preventDefault();
       //mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       //mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-      console.log(event.touches[0])
-      mouse.x = +(event.touches[0].screenX / window.innerWidth) * 2 + -1;
-      mouse.y = -(event.touches[0].screenY / window.innerHeight) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
+      console.log(event.targetTouches[0])
+      //mouse.x = event.touches[0].screenX
+      //mouse.y = event.touches[0].screenY
+
+      mouse_touch.x = +(event.touches[0].clientX / window.innerWidth) * 2 + -1;
+      //mouse_touch.x = +(event.targetTouches[0].pageX / window.innerWidth) * 2 + -1;
+      mouse_touch.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+      //mouse_touch.y = -(event.targetTouches[0].pageX / window.innerWidth) * 2 + 1;;
+
+      raycaster.setFromCamera(mouse_touch, camera);
+
       var intersects = raycaster.intersectObject(group, true);
       var pre_camera_pos = camera.position;
       var pre_camera_look = (0, 0, 0);
@@ -396,8 +404,8 @@
         if (INTERSECTED != intersects[0].object) {
 
           //console
-          //console.log(intersects);
-          //console.log(intersects[0].object.name);
+          console.log(intersects);
+          console.log(intersects[0].object.name);
 
           //depend on name
           if (intersects[0].object.name == "R0_4F_Plane.004") {
@@ -405,15 +413,15 @@
             SELECTED.currentHex = SELECTED.material.color.getHex();
             model_map.children[19].material.color.setHex(0xffa2a5);
             if (modal_R0.style.display == "none" && intersects.length > 0) {
-              // var p = intersects[0].point;
-              // var n = intersects[0].face.normal.clone(0, 1, 0);
+              var p = intersects[0].point;
+              var n = intersects[0].face.normal.clone(0, 1, 0);
               // console.log(intersects[0]);
-              // n.multiplyScalar(2);
-              // n.add(intersects[0].point);
-              // console.log(n, p);
+              n.multiplyScalar(2);
+              n.add(intersects[0].point);
+              console.log(n, p);
               camera.position.set(-0, 2.4, 0);
               camera.lookAt(-0, 0.4, 0);
-              //console.log(mouse.x, mouse.y);
+              console.log(mouse_touch.x, mouse_touch.y);
             } else {
               SELECTED.material.color.setHex(0xffffff);
               camera.position.set(0, 3, 2);
